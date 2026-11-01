@@ -11,7 +11,7 @@ RUN apk add --no-cache php85 php85-fpm php85-phar php85-mysqli php85-openssl \
 	chmod +x /usr/local/bin/wp && \
 	mkdir -p /var/www/html
 
-COPY conf/zz-docker.conf /etc/php85/php-fpm.d/zz-docker.conf
+COPY conf/zz-docker.conf.template /etc/php85/php-fpm.d/zz-docker.conf.template
 COPY --chmod=755 tools/entrypoint.sh /usr/local/bin/entrypoint.sh
 
 WORKDIR /var/www/html

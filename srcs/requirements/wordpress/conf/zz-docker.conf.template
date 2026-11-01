@@ -3,5 +3,7 @@ error_log = /proc/self/fd/2
 daemonize = no
 
 [www]
+user = __WP_TEMP_USER__
+group = __WP_TEMP_USER__
 listen = 9000
 catch_workers_output = yes

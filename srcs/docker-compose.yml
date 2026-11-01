@@ -63,6 +63,8 @@ services:
       - WP_ADMIN_EMAIL=${WP_ADMIN_EMAIL}
       - WP_USER=${WP_USER}
       - WP_USER_EMAIL=${WP_USER_EMAIL}
+      - WP_UID=${WP_UID}
+      - WP_TEMP_USER=${WP_TEMP_USER}
     secrets:
       - db_password
       - wp_admin_password
@@ -105,6 +107,8 @@ services:
     depends_on:
       - wordpress
     environment:
+      - WP_UID=${WP_UID}
+#      - WP_TEMP_USER=${WP_TEMP_USER}
       - FTP_USER=${FTP_USER}
     secrets:
       - ftp_user_password

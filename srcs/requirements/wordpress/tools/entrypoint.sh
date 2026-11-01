@@ -4,10 +4,24 @@ set -e
 
 WP_PATH=/var/www/html
 
+WP_UID="${WP_UID:-1000}"
+WP_TEMP_USER="$WP_TEMP_USER"
+
 DB_PASSWORD=$(cat /run/secrets/db_password)
 WP_ADMIN_PASSWORD=$(cat /run/secrets/wp_admin_password)
 WP_USER_PASSWORD=$(cat /run/secrets/wp_user_password)
 REDIS_PASSWORD=$(cat /run/secrets/redis_password)
+
+# Creating a temp user with uid WP_UID to create all the wp files with it avoiding permission issues with ftp service.
+
+if ! id "$WP_TEMP_USER" >/dev/null 2>&1; then
+	addgroup -g "$WP_UID" "$WP_TEMP_USER"
+	adduser -D -H -u "$WP_UID" -G "$WP_TEMP_USER" -s /sbin/nologin "$WP_TEMP_USER"
+fi
+
+sed -e "s/__WP_TEMP_USER__/$WP_TEMP_USER/g" \
+	/etc/php85/php-fpm.d/zz-docker.conf.template \
+	> /etc/php85/php-fpm.d/zz-docker.conf
 
 # Check if admin is in username
 case "$(echo "$WP_ADMIN_USER" | tr '[:upper:]' '[:lower:]')" in *admin*)
@@ -68,7 +82,9 @@ wp redis enable --path="$WP_PATH" --allow-root || echo "WARNING: redis couldn't 
 # To update de domain in case there is a change after DB creation
 wp option update home "https://$DOMAIN_NAME" --path="$WP_PATH" --allow-root
 wp option update siteurl "https://$DOMAIN_NAME" --path="$WP_PATH" --allow-root
-chown -R nobody:nobody "$WP_PATH"
+
+# Changing the files owner to the temporary user
+chown -R "$WP_TEMP_USER:$WP_TEMP_USER" "$WP_PATH"
 
 exec "$@"
 
