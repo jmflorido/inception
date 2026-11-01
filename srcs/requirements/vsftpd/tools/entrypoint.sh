@@ -5,7 +5,6 @@ set -e
 FTP_USER="${FTP_USER:-ftpuser}"
 FTP_USER_PASSWORD=$(cat /run/secrets/ftp_user_password)
 
-echo "ATENCION!!!!!!!!$FTP_USER"
 if ! id "$FTP_USER" >/dev/null 2>&1; then
 	adduser -D -h "/home/$FTP_USER" -s /sbin/nologin "$FTP_USER"
 fi
