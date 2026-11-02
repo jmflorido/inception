@@ -57,7 +57,7 @@ all: hosts dirs
 	docker compose -f srcs/docker-compose.yml up -d --build
 
 dirs:
-	sudo mkdir -p /home/joflorid/data/mariadb /home/joflorid/data/wordpress
+	sudo mkdir -p /home/joflorid/data/mariadb /home/joflorid/data/wordpress /home/joflorid/data/portainer
 
 hosts:
 	@grep -q "$(DOMAIN)" /etc/hosts || \
