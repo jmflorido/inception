@@ -108,7 +108,6 @@ services:
       - wordpress
     environment:
       - WP_UID=${WP_UID}
-#      - WP_TEMP_USER=${WP_TEMP_USER}
       - FTP_USER=${FTP_USER}
     secrets:
       - ftp_user_password
@@ -117,6 +116,19 @@ services:
     security_opt:
       - no-new-privileges:true
     restart: unless-stopped
+
+  adminer:
+    build: ./requirements/adminer
+    image: adminer:1.0
+    container_name: adminer
+    networks:
+      - inception
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped 
 
 secrets:
   db_password:
