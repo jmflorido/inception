@@ -15,26 +15,49 @@ http {
         listen 443 ssl;
         server_name __DOMAIN_NAME__;
 
-		ssl_protocols TLSv1.2 TLSv1.3;
-		ssl_certificate 	/etc/nginx/ssl/server.crt;
-		ssl_certificate_key	/etc/nginx/ssl/server.key;	
+	ssl_protocols TLSv1.2 TLSv1.3;
+	ssl_certificate 	/etc/nginx/ssl/server.crt;
+	ssl_certificate_key	/etc/nginx/ssl/server.key;	
 
         root /var/www/html;
         index index.php index.html;
 
         location / {
             try_files $uri $uri/ /index.php?$args;
-        }
+        	}
 	
 	location ~ \.php$ {
 		include fastcgi_params;
 		fastcgi_pass wordpress:9000;
 		fastcgi_index index.php;
 		fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-	}
+		}
 	
 	location /adminer {
 		proxy_pass http://adminer:8080;
-	}		
-    }
+    		}
+
+	}
+    server {
+	listen 443 ssl;
+	server_name portainer.__DOMAIN_NAME__;
+	
+	ssl_protocols TLSv1.2 TLSv1.3;
+	ssl_certificate 	/etc/nginx/ssl/server.crt;
+	ssl_certificate_key	/etc/nginx/ssl/server.key;	
+	
+	location / {
+		proxy_pass https://portainer:9443;
+		proxy_ssl_verify off;
+		# Keep original request name. Otherwise, portainer:9443 is sent.
+		proxy_set_header Host $host;
+		# Pass client real ip. Otherwise, portainer always receives nginx IP
+		proxy_set_header X-Real-IP $remote_addr;
+		# Adds the client IP to the proxies where the request pass in
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_http_version 1.1;
+		proxy_set_header Upgrade $http_upgrade;
+		proxy_set_header Connection "upgrade";
+		}
+	}
 }

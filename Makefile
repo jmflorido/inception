@@ -54,20 +54,30 @@ WHITE       = \033[0;97m
 DOMAIN = joflorid.42.fr
 
 all: hosts dirs
+	@echo "$(BLUE)$$HEADER$(DEF_COLOR)"
 	docker compose -f srcs/docker-compose.yml up -d --build
 
 dirs:
-	sudo mkdir -p /home/joflorid/data/mariadb /home/joflorid/data/wordpress /home/joflorid/data/portainer
+	sudo mkdir -p /home/joflorid/data/mariadb \
+	       	/home/joflorid/data/wordpress \
+		/home/joflorid/data/portainer
 
 hosts:
-	@grep -q "$(DOMAIN)" /etc/hosts || \
-		echo "0.0.0.0 $(DOMAIN)" | sudo tee -a /etc/hosts
-
+	@grep -q "portainer.$(DOMAIN)" /etc/hosts || \
+		echo "127.0.0.1 $(DOMAIN) portainer.$(DOMAIN)" | sudo tee -a /etc/hosts
 down:
 	docker compose -f srcs/docker-compose.yml down
 
 clean:
-	sudo rm -rf /home/joflorid/data/mariadb /home/joflorid/data/wordpress
+	sudo rm -rf /home/joflorid/data/mariadb \
+		/home/joflorid/data/wordpress \
+		/home/joflorid/data/portainer
+
+fclean:
+	docker volume rm $$(docker volume ls -qf dangling=true) && \
+	sudo rm -rf /home/joflorid/data/mariadb \
+		/home/joflorid/data/wordpress \
+		/home/joflorid/data/portainer
 
 status:
 	docker compose -f srcs/docker-compose.yml ps -a
@@ -75,4 +85,4 @@ status:
 logs:
 	@read -p "Enter service: " _SERVICE_;\
 	docker compose -f srcs/docker-compose.yml logs "$$_SERVICE_"
-.PHONY: all hosts down clean
+.PHONY: all dirs hosts down clean fclean status logs

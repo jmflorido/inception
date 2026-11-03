@@ -7,6 +7,7 @@ services:
     container_name: nginx
     depends_on:
       - wordpress
+      - portainer
     ports: 
       - "0.0.0.0:443:443"
     environment:
@@ -77,6 +78,11 @@ services:
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep php-fpm"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   
   redis:
     build: ./requirements/redis
@@ -116,6 +122,11 @@ services:
     security_opt:
       - no-new-privileges:true
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z localhost 21"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
 
   adminer:
     build: ./requirements/adminer
@@ -129,6 +140,11 @@ services:
     security_opt:
       - no-new-privileges:true
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-check-certificate -q --spider http://localhost:8080/ || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
 
   portainer:
     build: ./requirements/portainer
@@ -136,17 +152,22 @@ services:
     container_name: portainer
     networks:
       - inception
-    depends_on:
-      - mariadb
-      - wordpress
-      - nginx
-      - adminer
+#    depends_on:
+#      - mariadb
+#      - wordpress
+#      - nginx
+#      - adminer
     volumes:
-#      - docker_sock:/var/run/docker.sock
+      - docker_sock:/var/run
       - portainer_data:/data
     security_opt:
      - no-new-privileges:true
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-check-certificate -q --spider https://localhost:9443/ || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
 
 secrets:
   db_password:
@@ -175,12 +196,12 @@ volumes:
       type: none
       o: bind
       device: /home/joflorid/data/wordpress
- # docker_sock:
- #   driver: local
- #   driver_opts:
- #     type: none
- #     o: bind
- #     device: /var/run/docker.sock
+  docker_sock:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /var/run
   portainer_data:
     driver: local
     driver_opts:

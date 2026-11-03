@@ -14,7 +14,7 @@ if [ ! -f "$SSL_DIR/server.crt" ] || [ ! -f "$SSL_DIR/server.key" ]; then
 		-keyout "$SSL_DIR/server.key" \
 		-out "$SSL_DIR/server.crt" \
 		-subj "/CN=$DOMAIN_NAME" \
-		-addext "subjectAltName=DNS:$DOMAIN_NAME"
+		-addext "subjectAltName=DNS:$DOMAIN_NAME, DNS:portainer.$DOMAIN_NAME"
 	chmod u=rw,go= "$SSL_DIR/server.key"
 fi
 

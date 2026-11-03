@@ -1,6 +1,6 @@
 FROM alpine:3.23
 
-RUN apk add --no-cache vsftpd
+RUN apk add --no-cache vsftpd netcat-openbsd
 COPY conf/vsftpd.conf /etc/vsftpd/vsftpd.conf
 COPY --chmod=755 tools/entrypoint.sh /usr/local/bin/entrypoint.sh
 

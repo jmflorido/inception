@@ -9,6 +9,8 @@ RUN mkdir -p /var/www
 
 RUN wget https://www.adminer.org/latest.php -O /var/www/adminer.php
 
+EXPOSE 8080
+
 WORKDIR /var/www
 
 CMD ["php85", "-S", "0.0.0.0:8080", "adminer.php"] 
