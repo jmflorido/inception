@@ -14,6 +14,7 @@ http {
     server {
         listen 443 ssl;
         server_name __DOMAIN_NAME__;
+	absolute_redirect off;
 
 	ssl_protocols TLSv1.2 TLSv1.3;
 	ssl_certificate 	/etc/nginx/ssl/server.crt;
@@ -41,6 +42,7 @@ http {
     server {
 	listen 443 ssl;
 	server_name portainer.__DOMAIN_NAME__;
+	absolute_redirect off;
 	
 	ssl_protocols TLSv1.2 TLSv1.3;
 	ssl_certificate 	/etc/nginx/ssl/server.crt;

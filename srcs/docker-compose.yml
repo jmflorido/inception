@@ -9,7 +9,7 @@ services:
       - wordpress
       - portainer
     ports: 
-      - "0.0.0.0:443:443"
+      - "0.0.0.0:${DOMAIN_PORT:-443}:443"
     environment:
       - DOMAIN_NAME=${DOMAIN_NAME}
     volumes:
@@ -18,7 +18,7 @@ services:
     security_opt:
       - no-new-privileges:true
     healthcheck:
-      test: ["CMD-SHELL", "wget --no-check-certificate -q --spider https://localhost:443/ || exit 1"]
+      test: ["CMD-SHELL", "wget --no-check-certificate -q --spider https://localhost:${DOMAIN_PORT:-443}/ || exit 1"]
       interval: 30s
       timeout: 5s
       retries: 3
@@ -58,6 +58,7 @@ services:
     environment:
       - WP_TITLE=${WP_TITLE}
       - DOMAIN_NAME=${DOMAIN_NAME}
+      - DOMAIN_PORT=${DOMAIN_PORT}
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_DATABASE=${MYSQL_DATABASE}
       - WP_ADMIN_USER=${WP_ADMIN_USER}
@@ -189,25 +190,25 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: /home/joflorid/data/mariadb
+      device: /home/joflorid/data/mariadb/
   wordpress_data:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: /home/joflorid/data/wordpress
+      device: /home/joflorid/data/wordpress/
   docker_sock:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: /var/run
+      device: /var/run/
   portainer_data:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: /home/joflorid/data/portainer
+      device: /home/joflorid/data/portainer/
 
 networks:
   inception:

@@ -7,6 +7,12 @@ WP_PATH=/var/www/html
 WP_UID="${WP_UID:-1000}"
 WP_TEMP_USER="$WP_TEMP_USER"
 
+if [ "$HTTPS_PORT" = "443" ]; then
+	SITE_URL="https://$DOMAIN_NAME"
+else
+	SITE_URL="https://$DOMAIN_NAME:$HTTPS_PORT"
+fi
+
 DB_PASSWORD=$(cat /run/secrets/db_password)
 WP_ADMIN_PASSWORD=$(cat /run/secrets/wp_admin_password)
 WP_USER_PASSWORD=$(cat /run/secrets/wp_user_password)
@@ -60,7 +66,7 @@ wp config set WP_REDIS_PASSWORD "$REDIS_PASSWORD" --path="$WP_PATH" --allow-root
 # Install the site and create the users
 if ! wp core is-installed --path="$WP_PATH" --allow-root; then
 	wp core install --path="$WP_PATH" --allow-root \
-		--url="https://$DOMAIN_NAME" \
+		--url="$SITE_URL" \
 		--title="$WP_TITLE" \
 		--admin_user="$WP_ADMIN_USER" \
 		--admin_password="$WP_ADMIN_PASSWORD" \
@@ -80,8 +86,8 @@ fi
 wp redis enable --path="$WP_PATH" --allow-root || echo "WARNING: redis couldn't be activated"
 
 # To update de domain in case there is a change after DB creation
-wp option update home "https://$DOMAIN_NAME" --path="$WP_PATH" --allow-root
-wp option update siteurl "https://$DOMAIN_NAME" --path="$WP_PATH" --allow-root
+wp option update home "$SITE_URL" --path="$WP_PATH" --allow-root
+wp option update siteurl "$SITE_URL" --path="$WP_PATH" --allow-root
 
 # Changing the files owner to the temporary user
 chown -R "$WP_TEMP_USER:$WP_TEMP_USER" "$WP_PATH"
