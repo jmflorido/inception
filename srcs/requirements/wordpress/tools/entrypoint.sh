@@ -8,10 +8,10 @@ WP_UID="${WP_UID:-1000}"
 WP_TEMP_USER="$WP_TEMP_USER"
 MARIADB_PORT=3306
 
-if [ "$HTTPS_PORT" = "443" ]; then
+if [ "$DOMAIN_PORT" = "443" ]; then
 	SITE_URL="https://$DOMAIN_NAME"
 else
-	SITE_URL="https://$DOMAIN_NAME:$HTTPS_PORT"
+	SITE_URL="https://$DOMAIN_NAME:$DOMAIN_PORT"
 fi
 
 DB_PASSWORD=$(cat /run/secrets/db_password)
