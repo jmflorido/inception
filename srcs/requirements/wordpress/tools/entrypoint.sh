@@ -6,6 +6,7 @@ WP_PATH=/var/www/html
 
 WP_UID="${WP_UID:-1000}"
 WP_TEMP_USER="$WP_TEMP_USER"
+MARIADB_PORT=3306
 
 if [ "$HTTPS_PORT" = "443" ]; then
 	SITE_URL="https://$DOMAIN_NAME"
@@ -37,7 +38,7 @@ case "$(echo "$WP_ADMIN_USER" | tr '[:upper:]' '[:lower:]')" in *admin*)
 esac
 
 # Wait for mariadb
-until mariadb-admin ping -h mariadb -P 3307 -u"$MYSQL_USER" -p"$DB_PASSWORD" --skip-ssl --silent; do
+until mariadb-admin ping -h mariadb -P "$MARIADB_PORT" -u"$MYSQL_USER" -p"$DB_PASSWORD" --skip-ssl --silent; do
 	echo "Waiting to MariaDB..."
 	sleep 2
 done
@@ -52,16 +53,16 @@ if [ ! -f "$WP_PATH/wp-config.php" ]; then
 		--dbname="$MYSQL_DATABASE" \
 		--dbuser="$MYSQL_USER" \
 		--dbpass="$DB_PASSWORD" \
-		--dbhost=mariadb:3307
+		--dbhost=mariadb:"$MARIADB_PORT"
 fi
 
 # Redis settings (adding entries to wp-config.php)
 wp config set WP_REDIS_HOST redis --path="$WP_PATH" --allow-root
 wp config set WP_REDIS_PORT 6379 --raw --path="$WP_PATH" --allow-root
 wp config set WP_REDIS_PASSWORD "$REDIS_PASSWORD" --path="$WP_PATH" --allow-root
-#echo "define('WP_REDIS_HOST', 'redis')" >> "$WP_PATH/wp-config.php"
-#echo "define('WP_REDIS_PORT', 6379)" >> "$WP_PATH/wp-config.php"
 
+# To change mariadb port after an initial installation
+wp config set DB_HOST "mariadb:$MARIADB_PORT" --path="$WP_PATH" --allow-root
 
 # Install the site and create the users
 if ! wp core is-installed --path="$WP_PATH" --allow-root; then
@@ -93,4 +94,3 @@ wp option update siteurl "$SITE_URL" --path="$WP_PATH" --allow-root
 chown -R "$WP_TEMP_USER:$WP_TEMP_USER" "$WP_PATH"
 
 exec "$@"
-

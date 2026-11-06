@@ -100,7 +100,7 @@ services:
     security_opt:
       - no-new-privileges:true
     healthcheck:
-      test: ["CMD-SHELL", "redis-cli ping --silent"]
+      test: ["CMD-SHELL", "redis-cli -p 6379 ping --silent"]
       interval: 10s
       timeout: 5s
       retries: 5

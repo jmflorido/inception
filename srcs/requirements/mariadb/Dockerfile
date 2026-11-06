@@ -7,7 +7,7 @@ COPY --chmod=755 tools/entrypoint.sh /usr/local/bin/entrypoint.sh
 
 VOLUME home/joflorid/data/mariadb /var/lib/mysql
 
-EXPOSE 3307
+EXPOSE 3306
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
