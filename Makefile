@@ -85,4 +85,6 @@ status:
 logs:
 	@read -p "Enter service: " _SERVICE_;\
 	docker compose -f srcs/docker-compose.yml logs "$$_SERVICE_"
-.PHONY: all dirs hosts down clean fclean status logs
+
+re: fclean all
+.PHONY: all dirs hosts down clean fclean status logs re

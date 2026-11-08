@@ -18,7 +18,7 @@ http {
 
 	ssl_protocols TLSv1.2 TLSv1.3;
 	ssl_certificate 	/etc/nginx/ssl/server.crt;
-	ssl_certificate_key	/etc/nginx/ssl/server.key;	
+	ssl_certificate_key	/etc/nginx/ssl/server.key;
 
         root /var/www/html;
         index index.php index.html;
@@ -26,14 +26,14 @@ http {
         location / {
             try_files $uri $uri/ /index.php?$args;
         	}
-	
+
 	location ~ \.php$ {
 		include fastcgi_params;
 		fastcgi_pass wordpress:9000;
 		fastcgi_index index.php;
 		fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
 		}
-	
+
 	location /adminer {
 		proxy_pass http://adminer:8080;
     		}
@@ -43,11 +43,11 @@ http {
 	listen 443 ssl;
 	server_name portainer.__DOMAIN_NAME__;
 	absolute_redirect off;
-	
+
 	ssl_protocols TLSv1.2 TLSv1.3;
 	ssl_certificate 	/etc/nginx/ssl/server.crt;
-	ssl_certificate_key	/etc/nginx/ssl/server.key;	
-	
+	ssl_certificate_key	/etc/nginx/ssl/server.key;
+
 	location / {
 		proxy_pass https://portainer:9443;
 		proxy_ssl_verify off;

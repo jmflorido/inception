@@ -123,7 +123,7 @@ To inspect the Redis integration:
 docker compose -f srcs/docker-compose.yml exec wordpress \
   wp redis status --path=/var/www/html --allow-root
 docker compose -f srcs/docker-compose.yml exec redis sh -c \
-  'REDISCLI_AUTH="$(cat /run/secrets/redis_password)" redis-cli dbsize'
+  'REDISCLI_AUTH="$(cat /run/secrets/redis_password)" redis-cli -p XXXX dbsize'
 ```
 
 The first WordPress startup can take a little longer because it waits for MariaDB, downloads WordPress, installs the site, and installs the Redis cache plugin.
@@ -132,19 +132,21 @@ The first WordPress startup can take a little longer because it waits for MariaD
 
 ### Documentation and references
 
+- [Docker Course](https://www.youtube.com/playlist?list=PLqRCtm0kbeHAep1hc7yW-EZQoAJqSTgD-)
 - [Docker documentation](https://docs.docker.com/)
 - [Docker Compose file reference](https://docs.docker.com/reference/compose-file/)
 - [Docker storage volumes](https://docs.docker.com/engine/storage/volumes/)
 - [Docker bridge networks](https://docs.docker.com/engine/network/drivers/bridge/)
 - [Docker secrets](https://docs.docker.com/engine/swarm/secrets/)
 - [Nginx documentation](https://nginx.org/en/docs/)
-- [WordPress developer documentation](https://developer.wordpress.org/)
-- [WP-CLI handbook](https://make.wordpress.org/cli/handbook/)
-- [MariaDB documentation](https://mariadb.com/docs/)
+- [Wordpress documentation](https://developer.wordpress.org/)
+- [wp config file guide](https://deliciousbrains.com/developers-guide-to-wpconfig/)
+- [Dockerizing MariaDB](https://community.hetzner.com/tutorials/dockerizing-mariadb-with-alpine-linux/)
 - [Redis documentation](https://redis.io/docs/latest/)
 - [Adminer](https://www.adminer.org/)
 - [Portainer documentation](https://docs.portainer.io/)
 - [vsftpd documentation](https://security.appspot.com/vsftpd.html)
+- [Compose Health Checks](https://medium.com/@cbaah123/docker-compose-health-checks-made-easy-a-practical-guide-3a340571b88e)
 
 ### AI usage
 

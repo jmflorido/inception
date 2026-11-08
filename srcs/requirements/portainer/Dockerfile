@@ -14,5 +14,5 @@ EXPOSE 8000
 
 WORKDIR /portainer
 
-#CMD ["./portainer", "--trusted-origins", "https://portainer.joflorid.42.fr", "--no-setup-token", "--data", "/data"] 
-CMD ["./portainer", "--data", "/data"] 
+#CMD ["./portainer", "--trusted-origins", "https://portainer.joflorid.42.fr", "--no-setup-token", "--data", "/data"]
+CMD ["./portainer", "--data", "/data", "--bind-https", ":9443"]

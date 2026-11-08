@@ -8,7 +8,7 @@ services:
     depends_on:
       - wordpress
       - portainer
-    ports: 
+    ports:
       - "0.0.0.0:${DOMAIN_PORT:-443}:443"
     environment:
       - DOMAIN_NAME=${DOMAIN_NAME}
@@ -84,7 +84,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-  
+
   redis:
     build: ./requirements/redis
     image: redis:1.0
@@ -153,11 +153,6 @@ services:
     container_name: portainer
     networks:
       - inception
-#    depends_on:
-#      - mariadb
-#      - wordpress
-#      - nginx
-#      - adminer
     volumes:
       - docker_sock:/var/run
       - portainer_data:/data
@@ -165,7 +160,7 @@ services:
      - no-new-privileges:true
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "wget --no-check-certificate -q --spider https://localhost:9443/ || exit 1"]
+      test: ["CMD-SHELL", "wget --no-check-certificate -q --spider https://localhost:9445/ || exit 1"]
       interval: 30s
       timeout: 5s
       retries: 3
@@ -214,4 +209,4 @@ networks:
   inception:
     name: inception
     driver: bridge
-    
+
