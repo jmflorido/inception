@@ -1,0 +1,4 @@
+# GitHub Linguist: show Dockerfile as the primary language.
+Makefile linguist-detectable=false
+*.sh linguist-detectable=false
+*.Dockerfile linguist-detectable=true
